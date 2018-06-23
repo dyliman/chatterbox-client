@@ -1,35 +1,30 @@
 $( document ).ready(function() {
   var app = { 
     server: 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages',
-    uniqRoom: new Set(),
-    
+    uniqRoom: new Set(['Default']),
+    friendlist: {},
+    currentRoom: 'Default',
     
     init: function() {
 
-      $('.username').on('click', function(event) {
-        app.handleUsernameClick();
+      $('.username').click(function(event) {
+        //app.handleUsernameClick(this);
+        app.friendlist[$(this).text()] = 1;
+        event.stopImmediatePropagation();
       });
     
-      //$('#send .submit').submit()
-      $('#button').click(function() {
+      $('#button').click(function(event) {
         console.log('clicked');
         app.handleSubmit();
+        event.stopImmediatePropagation();
       });
 
-      $('#roomButton').click(function() {
+      $('#roomButton').click(function(event) {
         console.log('making a room');
         var roomText = $('#createRoom').val();
-        // JSON.stringify(roomText)
-        // roomText = roomText.replace(/[\W_]+/g, ' ');
-        // var option = $('<option>');
-        // option.text(roomText);
-        // option.val(roomText);
         app.uniqRoom.add(roomText);
         app.renderRoom();
-        // get the text value
-        // create some kind of element
-        // set its text as the input from the form.
-        // use append  to add it as a child of the roomselect id.
+        event.stopImmediatePropagation();
       });
 
     },
@@ -65,6 +60,8 @@ $( document ).ready(function() {
           for (var result = 0; result < data.results.length; result++) {
             app.renderMessage(data.results[result]);
           }
+          app.init();
+          
         },
         error: function (data) {
           // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
@@ -84,7 +81,10 @@ $( document ).ready(function() {
       messageBox.addClass('message');
       
       var userBox = $('<a>');
+      //userBox.addAction('#');
       userBox.addClass('username');
+      userBox.val('username');
+        
       
       var roomBox = $('<a>');
       roomBox.addClass('roomName');
@@ -93,6 +93,11 @@ $( document ).ready(function() {
       
       var textBox = $('<p>');
       textBox.addClass('text');
+      
+      if(app.friendlist.hasOwnProperty(message.username)){
+        userBox.addClass('friend');
+        textBox.addClass('friend');
+      }
       
       userBox.text(message.username.replace(/[\W_]+/g, ' '));
       textBox.text(message.text.replace(/[\W_]+/g, ' '));
@@ -108,11 +113,13 @@ $( document ).ready(function() {
       
       messageBox.append(span);
       messageBox.append(textBox);
-      
-      $('#chats').append(messageBox);
-      
-      
-      
+      if (app.currentRoom === message.roomname) {
+        $('#chats').append(messageBox);
+        
+      } else if (app.currentRoom === 'Default') {
+        $('#chats').append(messageBox);
+      } 
+
     },
   
     renderRoom: function() {
@@ -123,11 +130,15 @@ $( document ).ready(function() {
         option.text(room.replace(/[\W_]+/g, ' '));
         $('#roomSelect').append(option);
       });
-      
-      //$('#roomSelect').append(option);
+    
     },
     
-    handleUsernameClick: function() {
+    handleUsernameClick: function(username) {
+      // Get the text from the username
+      // stick that into friendlist as key
+      $(username).addClass('friend');
+      console.log(username);
+      
       
     },
     
@@ -141,11 +152,14 @@ $( document ).ready(function() {
       var room = $('#roomSelect').val();
       if (room !== 'Default' && room !== undefined) {
         message.roomname = room;
+        app.currentRoom = room;
+      }else if(room === 'Default'){
+        app.currentRoom = 'Default';
       }
-        
       // message.username = "<script>app.send({text: \"Check yo' console, sucka!\"}); console.log(\"You sent this\")</script>";
       app.send(message);
       console.log('inside the handleSubmit method!!!');
+      
     },
 
     
@@ -155,14 +169,14 @@ $( document ).ready(function() {
   var refresh = function() {
     setInterval(function() {
       app.fetch();
+      //console.log(app.uniqRoom);
     }, 2000);
-    // setInterval(function() {
-    //   app.init();
-    // }, 2000);
   };
   app.init();
   app.fetch();
+  app.renderRoom();
   refresh();
+  
 
 });
 
