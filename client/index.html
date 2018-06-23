@@ -27,6 +27,26 @@
     <div id="main">
       <h1>chatterbox</h1>
       <!-- Your HTML goes here! -->
+
+      <form id="send" method="post">
+        Type your message!<br>
+        <textarea type="text" value='textMessage' id='textMessage' rows=3 cols=50></textarea>
+        <button type="button" value="submit" id="button">Send</button>
+      </form>
+
+
+      <form id="makeRoom" method="post">
+        Make a room!<br>
+        <textarea type="text" value='roomName' id='createRoom' rows=1 cols=25></textarea>
+        <button type="button" value="submit" id="roomButton">Create Room!</button>
+      </form>
+
+
+      <select id="roomSelect"> 
+        <option value = 'Default'>Default</option>
+        <option value = 'room2'>sample room 2</option>
+      </select>
+
     </div>
     <div id="chats"></div>
     
