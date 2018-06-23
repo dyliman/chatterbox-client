@@ -11,9 +11,9 @@ $( document ).ready(function() {
       });
     
       //$('#send .submit').submit()
-      $('#button').click(function(){
-      console.log("clicked")
-      app.handleSubmit();
+      $('#button').click(function() {
+        console.log('clicked');
+        app.handleSubmit();
       });
 
       $('#roomButton').click(function() {
@@ -30,15 +30,7 @@ $( document ).ready(function() {
         // create some kind of element
         // set its text as the input from the form.
         // use append  to add it as a child of the roomselect id.
-      })
-// $( "#target" ).submit(function( event ) {
-//   alert( "Handler for .submit() called." );
-//   event.preventDefault();
-// });
-
-// $( "#other" ).click(function() {
-//   $( "#target" ).submit();
-// });
+      });
 
     },
   
@@ -80,7 +72,7 @@ $( document ).ready(function() {
         }
       });
     },
-  
+   
     clearMessages: function() {
       $('#chats').children().remove();
     },
@@ -108,13 +100,13 @@ $( document ).ready(function() {
       
       span.append(userBox);
       
-      if(message.roomname !== undefined){
+      if (message.roomname !== undefined) {
         roomBox.text('Room name: ' + message.roomname.replace(/[\W_]+/g, ' '));
         span.append(roomBox);
-        app.uniqRoom.add(message.roomname)
+        app.uniqRoom.add(message.roomname);
       }
       
-      messageBox.append(span)
+      messageBox.append(span);
       messageBox.append(textBox);
       
       $('#chats').append(messageBox);
@@ -126,7 +118,7 @@ $( document ).ready(function() {
     renderRoom: function() {
       $('#roomSelect').empty();
       
-      app.uniqRoom.forEach(function(room){
+      app.uniqRoom.forEach(function(room) {
         var option = $('<option>');
         option.text(room.replace(/[\W_]+/g, ' '));
         $('#roomSelect').append(option);
@@ -147,9 +139,9 @@ $( document ).ready(function() {
       message.username = window.location.search;
       
       var room = $('#roomSelect').val();
-        if(room !== "Default" && room !== undefined){
-          message.roomname = room;
-        }
+      if (room !== 'Default' && room !== undefined) {
+        message.roomname = room;
+      }
         
       // message.username = "<script>app.send({text: \"Check yo' console, sucka!\"}); console.log(\"You sent this\")</script>";
       app.send(message);
