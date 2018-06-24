@@ -93,3 +93,15 @@ form input[type=text] {
     
 }
 
+.unseen{
+    font-weight: bold;
+}
+
+.seen{
+    font-weight: normal;
+}
+
+.objectId{
+    visibility: hidden;
+}
+

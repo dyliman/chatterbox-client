@@ -4,6 +4,7 @@ $( document ).ready(function() {
     uniqRoom: new Set(['Default']),
     friendlist: {},
     currentRoom: 'Default',
+    seen: {},
     
     init: function() {
 
@@ -26,6 +27,17 @@ $( document ).ready(function() {
         app.renderRoom();
         event.stopImmediatePropagation();
       });
+      
+      // $('.message').hover(function(event){
+      //   console.log("in hover")
+        
+      //   if(!$(this).hasClass('seen')){
+      //     $(this).addClass('seen')
+      //     app.seen[$(this).val()] = 1;
+      //     console.log($(this).val());
+      //   }
+        
+      // })
 
     },
   
@@ -75,44 +87,59 @@ $( document ).ready(function() {
     },
   
     renderMessage: function(message) {
-      message.text = message.text || '';
-      message.username = message.username || 'Anonymous';
+      // MESSAGE BOX
       var messageBox = $('<div></div>');
       messageBox.addClass('message');
       
+      // //OBJECTID
+      // var objectId = $('<a>')
+      // objectId.text(message.objectId);
+      // objectId.addClass('objectId');
+      
+      // TEXT
+      message.text = message.text || '';
+      var textBox = $('<p>');
+      textBox.addClass('text');
+      
+      // USER
+      message.username = message.username || 'Anonymous';
       var userBox = $('<a>');
-      //userBox.addAction('#');
       userBox.addClass('username');
       userBox.val('username');
         
-      
+      // ROOM 
       var roomBox = $('<a>');
       roomBox.addClass('roomName');
       
       var span = $('<span>');
+      // span.append(objectId);
       
-      var textBox = $('<p>');
-      textBox.addClass('text');
-      
+      // FRIEND
       if(app.friendlist.hasOwnProperty(message.username)){
         userBox.addClass('friend');
         textBox.addClass('friend');
       }
       
+      // ESCAPE ATTACKS AND APPENDS
       userBox.text(message.username.replace(/[\W_]+/g, ' '));
       textBox.text(message.text.replace(/[\W_]+/g, ' '));
-      
-      
-      span.append(userBox);
-      
-      if (message.roomname !== undefined) {
+      if (message.roomname !== undefined && message.roomname !== null) {
         roomBox.text('Room name: ' + message.roomname.replace(/[\W_]+/g, ' '));
         span.append(roomBox);
         app.uniqRoom.add(message.roomname);
       }
-      
+      span.append(userBox);
       messageBox.append(span);
       messageBox.append(textBox);
+      
+      if (!app.seen.hasOwnProperty(message.objectId)) {
+        messageBox.addClass('unseen');
+      }
+      
+      
+      
+      
+      //CONDITIONS TO POST
       if (app.currentRoom === message.roomname) {
         $('#chats').append(messageBox);
         
@@ -170,7 +197,7 @@ $( document ).ready(function() {
     setInterval(function() {
       app.fetch();
       //console.log(app.uniqRoom);
-    }, 2000);
+    }, 204500);
   };
   app.init();
   app.fetch();
